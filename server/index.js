@@ -1,14 +1,16 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+const cors = require('cors');
 const OpenAI = require('openai');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-
-app.use(express.static(path.join(__dirname,"client","public")));
+app.use(express.json());
+app.use(cors());
+app.use(express.static(path.join(__dirname,"..","client")));
 
 
 app.post('/api/generate-strategy', async (req, res) => {
@@ -51,7 +53,7 @@ app.post('/api/generate-strategy', async (req, res) => {
     }, 1500); // 1.5 second delay
 
     // ===================  END OF MOCK IMPLEMENTATION  ===================
-    
+
     /* // We build a message history for the AI, starting with our system prompt.
     // We then add the previous chat history that the frontend sent us.
     const messages = [
