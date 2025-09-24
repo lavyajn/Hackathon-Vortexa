@@ -10,7 +10,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname,"..","client")));
+app.use(express.static(path.join(__dirname,"..","client","public")));
 
 
 app.post('/api/generate-strategy', async (req, res) => {
