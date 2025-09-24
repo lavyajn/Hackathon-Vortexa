@@ -3,50 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Debt Strategist</title>
+    <title>Strategist: AI Financial Advisor</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Material+Icons+Outlined&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <aside class="sidebar">
-            <button class="new-chat-btn" id="new-chat-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19" stroke="#212529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12H19" stroke="#212529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Chat
-            </button>
-            <div class="chat-history">
-                <h4>History</h4>
-                <div id="history-container">
-                    </div>
+        <nav class="sidebar collapsed">
+            <div class="sidebar-toggle" id="sidebar-toggle">
+                <span class="material-icons-outlined">menu</span>
             </div>
-        </aside>
+            <ul class="nav-links">
+                <li class="nav-item active">
+                    <a href="#" data-panel="chat-panel">
+                        <span class="material-icons-outlined">chat</span>
+                        <span class="nav-text">New Chat</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" data-panel="history-panel">
+                        <span class="material-icons-outlined">history</span>
+                        <span class="nav-text">Chat History</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-        <main class="chat-area">
-            <header class="chat-header">
-                <h3>AI Debt Strategist</h3>
-                <div class="notification-bell">🔔</div>
+        <main class="main-content">
+            <header class="main-header">
+                <h1 class="app-title">Strategist</h1>
+                <div class="header-actions">
+                    <button class="notification-bell" id="notification-bell">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span id="notification-count" class="notification-count hidden">0</span>
+                    </button>
+                </div>
             </header>
 
-            <div class="message-list" id="message-list">
+            <div class="panel-container">
+                <div id="chat-panel" class="panel active">
+                    <div id="chat-window" class="chat-window">
+                        <div id="initial-greeting" class="initial-greeting">
+                            <img src="https://assets.website-files.com/64b58b4f15d2a71d643809e2/64b58b4f15d2a71d64380a06_Untitled_design_1.png" alt="Strategist AI Avatar" class="ai-avatar">
+                            <p>Hello! How may I assist you today with your finances?</p>
+                            <p class="greeting-subtext">Click "New Chat" or type your financial details to begin.</p>
+                        </div>
+                    </div>
+                    <form id="chat-input-form" class="chat-input-form">
+                        <textarea id="user-input" placeholder="Type your financial concerns..." rows="1"></textarea>
+                        <button type="submit" id="send-btn">
+                            <span class="material-icons-outlined">send</span>
+                        </button>
+                        <div class="loading-dots hidden">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="history-panel" class="panel hidden">
+                    <div class="panel-header"><h2>Chat History</h2></div>
+                    <div id="history-content" class="panel-content">
+                        <p class="empty-state" id="history-empty-state">No chat history yet.</p>
+                        <ul id="history-list">
+                            </ul>
+                    </div>
                 </div>
 
-            <form class="prompt-form" id="prompt-form">
-                <input
-                    type="text"
-                    id="prompt-input"
-                    class="prompt-input"
-                    placeholder="Describe your financial situation here..."
-                    autocomplete="off"
-                />
-                <button type="submit" class="send-btn" id="send-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-            </form>
+                <div id="notification-settings-panel" class="panel hidden">
+                    <div class="panel-header"><h2>Notifications</h2></div>
+                    <div class="panel-content">
+                        <form id="notification-form" class="notification-form">
+                            <h3>Add New Reminder</h3>
+                            <label for="reminder-date">Due Date:</label>
+                            <input type="date" id="reminder-date" required>
+                            <label for="reminder-message">Message:</label>
+                            <textarea id="reminder-message" placeholder="e.g., Pay credit card bill" required></textarea>
+                            <button type="submit" class="submit-btn">Set Reminder</button>
+                        </form>
+                        <div class="notification-list">
+                            <h3>Active Reminders</h3>
+                            <p class="empty-state" id="notifications-empty-state">No active reminders.</p>
+                            <ul id="active-reminders-list">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
+
+    <div id="financial-input-modal" class="modal hidden">
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
