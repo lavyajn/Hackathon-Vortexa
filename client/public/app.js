@@ -17,10 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const notificationForm = document.getElementById('notification-form');
 
     // --- State Variables ---
-    // CORRECTED: Chat history is now a simple array of message objects.
     let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
     let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-    const API_URL = 'http://localhost:3001/api/generate-strategy';
+    const API_URL = 'http://localhost:3000/api/generate-strategy';
 
     // --- Core Functions ---
 
@@ -30,15 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
             panel.classList.remove('active');
         });
         const activePanel = document.getElementById(panelId);
-        if(activePanel) {
+        if (activePanel) {
             activePanel.classList.add('active');
         } else {
-            // Fallback to chat panel if ID is invalid
             document.getElementById('chat-panel').classList.add('active');
         }
     };
 
-    // CORRECTED: Simplified chat history loading
+    // Chat History Loading
     const loadChatHistory = () => {
         if (chatHistory.length > 0) {
             initialGreeting.style.display = 'none';
@@ -48,69 +46,101 @@ document.addEventListener('DOMContentLoaded', () => {
             renderHistoryList();
         }
     };
-
-    // CORRECTED: Simplified saving
-    const saveChatHistory = () => {
-        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-        renderHistoryList();
-    };
-
-    // CORRECTED: Renders a list based on the user's first prompt in a session
+    
+    // Renders chat history in the sidebar
     const renderHistoryList = () => {
         const userPrompts = chatHistory.filter(item => item.role === 'user');
-
         if (userPrompts.length === 0) {
             historyEmptyState.style.display = 'block';
             historyList.innerHTML = '';
             return;
         }
-
         historyEmptyState.style.display = 'none';
         historyList.innerHTML = '';
-        userPrompts.forEach((session, index) => {
+        userPrompts.forEach((session) => {
             const historyItem = document.createElement('li');
             historyItem.classList.add('history-item');
-            historyItem.textContent = session.content.substring(0, 30) + '...';
-            // Note: Loading a specific session would require more complex logic
-            // to split history into distinct conversations.
+            historyItem.textContent = session.content.title || session.content.substring(0, 30) + '...';
             historyList.appendChild(historyItem);
         });
     };
     
-    // Function to display a message in the chat window
-    const displayMessage = (role, content) => {
+    // Chat History Saving
+    const saveChatHistory = () => {
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        renderHistoryList();
+    };
+
+    // --- NEW DYNAMIC CHART RENDERING FUNCTION ---
+    const renderChartInBubble = (canvasId, chartData) => {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+            type: chartData.type, // 'pie' or 'bar'
+            data: {
+                labels: chartData.data.map(item => item.label),
+                datasets: [{
+                    label: chartData.title,
+                    data: chartData.data.map(item => item.value),
+                    backgroundColor: ['#4A90E2', '#28a745', '#FFC107', '#DC3545', '#6c757d', '#17a2b8'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: chartData.type === 'pie' ? 'top' : 'display',
+                    },
+                    title: {
+                        display: true,
+                        text: chartData.title
+                    }
+                }
+            }
+        });
+    };
+
+    // --- NEW SMART DISPLAY MESSAGE FUNCTION ---
+    const displayMessage = (role, aiDataObject) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-bubble', role);
-        // Using a proper Markdown parser would be better, but this handles newlines
-        const cleanedContent = content.replace(/\n/g, '<br>');
-        messageElement.innerHTML = cleanedContent;
+
+        if (role === 'ai') {
+            // Render the text part of the response
+            const textContent = document.createElement('div');
+            textContent.innerHTML = marked.parse(aiDataObject.response);
+            messageElement.appendChild(textContent);
+
+            // Check if there is chart data and render it
+            if (aiDataObject.chart) {
+                const chartContainer = document.createElement('div');
+                chartContainer.className = 'chart-in-bubble';
+                const canvasId = `chart-${Date.now()}`; // Unique ID for each canvas
+                chartContainer.innerHTML = `<canvas id="${canvasId}"></canvas>`;
+                messageElement.appendChild(chartContainer);
+
+                // IMPORTANT: We must wait a tiny moment for the DOM to update
+                // before trying to render the chart.
+                setTimeout(() => {
+                    renderChartInBubble(canvasId, aiDataObject.chart);
+                }, 0);
+            }
+        } else {
+            // For user messages, the content is just a string
+            messageElement.textContent = aiDataObject;
+        }
+        
         chatWindow.appendChild(messageElement);
-        chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll
+        chatWindow.scrollTop = chatWindow.scrollHeight;
 
         if (initialGreeting.style.display !== 'none') {
             initialGreeting.style.display = 'none';
         }
     };
-    
-    // We'll keep the parser as is, but a more robust NLP approach on the backend is better long-term.
-    const parseUserPrompt = (prompt) => {
-        const data = {
-             ongoing_loans: [], financial_context: '', assets: [], liabilities: [],
-             monthly_income: 0, desired_interest_tenure: 0
-        };
-        // This parser is very basic; the main logic relies on the AI backend.
-        data.financial_context = prompt; // Send the whole prompt for the AI to parse
-        return data;
-    };
 
-    // --- Event Listeners ---
+    // --- EVENT LISTENERS ---
+    sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
 
-    // Sidebar toggle
-    sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-    });
-
-    // Panel navigation
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -121,72 +151,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // *** MAJOR CORRECTION: Chat form submission using fetch() ***
     chatInputForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const userPrompt = userInput.value.trim();
         if (!userPrompt) return;
         
         displayMessage('user', userPrompt);
-        chatHistory.push({ role: 'user', content: userPrompt }); // Add user message to history
         userInput.value = '';
-        loadingDots.classList.remove('hidden'); // Show loading dots
-
-        const userData = parseUserPrompt(userPrompt);
+        loadingDots.classList.remove('hidden');
 
         try {
-            // REPLACED axios with fetch
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...userData,
-                    // Send a simplified history for context
-                    chat_history: chatHistory.slice(-4) 
-                })
+                body: JSON.stringify({ prompt: userPrompt })
             });
 
-            if (!response.ok) {
-                // Handle HTTP errors like 404 or 500
-                throw new Error(`API Error: ${response.statusText}`);
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+            const aiData = await response.json();
+
+            if (aiData.response) {
+                // Pass the ENTIRE aiData object to the display function
+                displayMessage('ai', aiData); 
+                
+                chatHistory.push({ role: 'user', content: userPrompt });
+                chatHistory.push({ role: 'ai', content: aiData }); // Save the whole object
+                saveChatHistory();
+            } else {
+                throw new Error("AI response format is incorrect.");
             }
 
-            const aiResponseData = await response.json();
-            
-            // Format the response for display
-            const fullResponse = `**Analysis:**\n${aiResponseData.analysis}\n\n**Strategy:**\n${aiResponseData.strategy}\n\n**Warnings:**\n- ${aiResponseData.warnings.join('\n- ')}`;
-
-            displayMessage('ai', fullResponse);
-            chatHistory.push({ role: 'ai', content: fullResponse }); // Add AI response to history
-            saveChatHistory(); // Save the full conversation
-
         } catch (error) {
-            console.error('API Error:', error);
-            displayMessage('ai', 'I am currently unable to provide a response. Please try again later.');
+            console.error("CRITICAL ERROR in fetch/display process:", error);
+            displayMessage('ai', { response: 'Sorry, an error occurred. Please check the console (F12).' });
         } finally {
-            // THIS IS KEY: The finally block always runs, hiding the dots
             loadingDots.classList.add('hidden');
         }
     });
 
-    // --- Notification System (No changes needed here) ---
+    // --- Notification System ---
     const renderReminders = () => {
-        if (reminders.length === 0) {
-            notificationsEmptyState.style.display = 'block';
-            activeRemindersList.innerHTML = '';
-            notificationCount.classList.add('hidden');
-        } else {
-            notificationsEmptyState.style.display = 'none';
-            activeRemindersList.innerHTML = '';
-            reminders.forEach(reminder => {
-                const reminderItem = document.createElement('li');
-                reminderItem.classList.add('reminder-item');
-                reminderItem.textContent = `${reminder.message} (Due: ${new Date(reminder.date).toLocaleDateString()})`;
-                activeRemindersList.appendChild(reminderItem);
-            });
-            notificationCount.classList.remove('hidden');
-            notificationCount.textContent = reminders.length;
-        }
+        notificationCount.textContent = reminders.length;
+        notificationCount.classList.toggle('hidden', reminders.length === 0);
+        notificationsEmptyState.style.display = reminders.length === 0 ? 'block' : 'none';
+        activeRemindersList.innerHTML = '';
+        reminders.forEach(reminder => {
+            const item = document.createElement('li');
+            item.className = 'reminder-item';
+            item.textContent = `${reminder.message} (Due: ${new Date(reminder.date).toLocaleDateString()})`;
+            activeRemindersList.appendChild(item);
+        });
     };
 
     notificationForm.addEventListener('submit', (e) => {
@@ -194,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const date = document.getElementById('reminder-date').value;
         const message = document.getElementById('reminder-message').value;
         if (!date || !message) return;
-
         reminders.push({ date, message });
         localStorage.setItem('reminders', JSON.stringify(reminders));
         renderReminders();
@@ -210,3 +224,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadChatHistory();
     renderReminders();
 });
+
