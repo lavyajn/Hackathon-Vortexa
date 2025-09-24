@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Debt Advisor</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Debt Advisor 🧠💻</h1>
+            <p>Your path to financial freedom.</p>
+        </header>
+
+        <main class="content-wrapper">
+            <section class="form-section box">
+                <h2>Your Financial Profile</h2>
+                <form id="debt-form">
+                    <label for="monthly-income">Monthly Income ($)</label>
+                    <input type="number" id="monthly-income" required>
+                    
+                    <h3>Your Debts</h3>
+                    <div id="loans-container">
+                        </div>
+                    <button type="button" id="add-loan-btn">Add Another Loan</button>
+                    
+                    <label for="financial-context">Tell us about your goals</label>
+                    <textarea id="financial-context" rows="4" placeholder="e.g., I want to pay off my student loans first, or I want to save for a house."></textarea>
+                    
+                    <button type="submit" class="submit-btn">Get My Strategy</button>
+                </form>
+            </section>
+
+            <section class="output-section box">
+                <h2>AI Advice</h2>
+                <div id="output-container" class="chat-container">
+                    </div>
+                <div id="chart-container" class="chart-container">
+                    <canvas id="debt-chart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
