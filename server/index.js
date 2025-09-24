@@ -1,14 +1,15 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
-const cors = require('cors');
 const OpenAI = require('openai');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-app.use(cors());
-app.use(express.json());
+
+app.use(express.static(path.join(__dirname,"client","public")));
+
 
 app.post('/api/generate-strategy', async (req, res) => {
   const { ongoing_loans, monthly_income, financial_context, chat_history } = req.body;
