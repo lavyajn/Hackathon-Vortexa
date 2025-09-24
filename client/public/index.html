@@ -3,49 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Debt Advisor</title>
+    <title>AI Debt Strategist</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AI Debt Advisor 🧠💻</h1>
-            <p>Your path to financial freedom.</p>
-        </header>
-
-        <main class="content-wrapper">
-            <section class="form-section box">
-                <h2>Your Financial Profile</h2>
-                <form id="debt-form">
-                    <label for="monthly-income">Monthly Income ($)</label>
-                    <input type="number" id="monthly-income" required>
-                    
-                    <h3>Your Debts</h3>
-                    <div id="loans-container">
-                        </div>
-                    <button type="button" id="add-loan-btn">Add Another Loan</button>
-                    
-                    <label for="financial-context">Tell us about your goals</label>
-                    <textarea id="financial-context" rows="4" placeholder="e.g., I want to pay off my student loans first, or I want to save for a house."></textarea>
-                    
-                    <button type="submit" class="submit-btn">Get My Strategy</button>
-                </form>
-            </section>
-
-            <section class="output-section box">
-                <h2>AI Advice</h2>
-                <div id="output-container" class="chat-container">
+    <div class="app-container">
+        <aside class="sidebar">
+            <button class="new-chat-btn" id="new-chat-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19" stroke="#212529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12H19" stroke="#212529" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                New Chat
+            </button>
+            <div class="chat-history">
+                <h4>History</h4>
+                <div id="history-container">
                     </div>
-                <div id="chart-container" class="chart-container">
-                    <canvas id="debt-chart"></canvas>
+            </div>
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <h3>AI Debt Strategist</h3>
+                <div class="notification-bell">🔔</div>
+            </header>
+
+            <div class="message-list" id="message-list">
                 </div>
-            </section>
+
+            <form class="prompt-form" id="prompt-form">
+                <input
+                    type="text"
+                    id="prompt-input"
+                    class="prompt-input"
+                    placeholder="Describe your financial situation here..."
+                    autocomplete="off"
+                />
+                <button type="submit" class="send-btn" id="send-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </form>
         </main>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js"></script>
 </body>
 </html>
