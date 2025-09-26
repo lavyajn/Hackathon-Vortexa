@@ -109,7 +109,7 @@ const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 2001;
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
@@ -149,7 +149,7 @@ app.post('/api/generate-strategy', async (req, res) => {
         **User's Situation:**
         ${prompt}
     `;
-    
+
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent(fullPrompt);
