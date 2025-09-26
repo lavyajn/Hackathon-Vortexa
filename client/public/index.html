@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -44,7 +44,6 @@
             <div class="panel-container">
                 <div id="chat-panel" class="panel active">
                     
-                    <!-- The static chart container has been REMOVED from here -->
 
                     <div id="chat-window" class="chat-window">
                         <div id="initial-greeting" class="initial-greeting">
@@ -94,6 +93,109 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js" defer></script>
+</body>
+</html>
+
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athena: AI Financial Advisor</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Material+Icons+Outlined&display=swap" rel="stylesheet">
+    <!-- The library for rendering Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar collapsed">
+            <div class="sidebar-toggle" id="sidebar-toggle">
+                <span class="material-icons-outlined">menu</span>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active">
+                    <a href="#" data-panel="chat-panel">
+                        <span class="material-icons-outlined">chat</span>
+                        <span class="nav-text">New Chat</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" data-panel="history-panel">
+                        <span class="material-icons-outlined">history</span>
+                        <span class="nav-text">Chat History</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="main-header">
+                <h1 class="app-title">Athena</h1>
+                <div class="header-actions">
+                    <button class="notification-bell" id="notification-bell">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span id="notification-count" class="notification-count hidden">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="panel-container">
+                <div id="chat-panel" class="panel active">
+                    <!-- The old static chart container has been REMOVED -->
+                    <div id="chat-window" class="chat-window">
+                        <div id="initial-greeting" class="initial-greeting">
+                            <img src="./Athena.png" alt="Athena" class="ai-avatar">
+                            <p>Hello! How may I assist you today with your finances?</p>
+                        </div>
+                    </div>
+                    <form id="chat-input-form" class="chat-input-form">
+                        <textarea id="user-input" placeholder="Type your financial concerns..." rows="1"></textarea>
+                        <button type="submit" id="send-btn">
+                            <span class="material-icons-outlined">send</span>
+                        </button>
+                        <div class="loading-dots hidden">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="history-panel" class="panel">
+                    <div class="panel-header"><h2>Chat History</h2></div>
+                    <div id="history-content" class="panel-content">
+                        <p class="empty-state" id="history-empty-state">No chat history yet.</p>
+                        <ul id="history-list"></ul>
+                    </div>
+                </div>
+
+                <div id="notification-settings-panel" class="panel">
+                    <div class="panel-header"><h2>Notifications</h2></div>
+                    <div class="panel-content">
+                        <form id="notification-form" class="notification-form">
+                            <h3>Add New Reminder</h3>
+                            <label for="reminder-date">Due Date:</label>
+                            <input type="date" id="reminder-date" required>
+                            <label for="reminder-message">Message:</label>
+                            <textarea id="reminder-message" placeholder="e.g., Pay credit card bill" required></textarea>
+                            <button type="submit" class="submit-btn">Set Reminder</button>
+                        </form>
+                        <div class="notification-list">
+                            <h3>Active Reminders</h3>
+                            <p class="empty-state" id="notifications-empty-state">No active reminders.</p>
+                            <ul id="active-reminders-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- The Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Your application script, deferred to load last -->
     <script src="app.js" defer></script>
 </body>
 </html>
