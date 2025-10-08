@@ -46,7 +46,7 @@ app.post('/api/generate-strategy', async (req, res) => {
     `;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
         const result = await model.generateContent(fullPrompt);
         const response = await result.response;
         const text = response.text();

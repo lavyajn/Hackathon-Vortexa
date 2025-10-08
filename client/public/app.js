@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State Variables ---
     let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
     let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-    const API_URL = 'http://localhost:2000/api/generate-strategy';
+    const API_URL = 'https://athena-ai-server.onrender.com/api/generate-strategy';
 
     // --- Core Functions ---
 
