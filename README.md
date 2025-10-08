@@ -1,7 +1,7 @@
 Athena: Your Personal AI Financial Strategist
 
 🚀 Live Demo
-Experience Athena live: https://athena-hackathon.vercel.app (Replace with your actual Vercel URL)
+Experience Athena live: https://athena-ai-omega.vercel.app/
 
 🎯 The Problem
 Managing personal debt is overwhelming. Traditional tools are just calculators—they provide numbers but offer no real strategy. They're impersonal, often confusing, and fail to address the user's core need: a clear, personalized guide to financial freedom. This leads to inaction, stress, and money lost to high interest rates.
